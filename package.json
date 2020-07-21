@@ -2,8 +2,6 @@
     "description": "My amazing LWC app",
     "version": "0.0.1",
     "author": "hsol-myamada",
-    "bugs": "https://github.com/hsol-myamada//issues",
-    "homepage": "https://github.com/hsol-myamada/",
     "dependencies": {
         "compression": "^1.7.4",
         "express": "^4.17.1",
