@@ -1,3 +1,4 @@
+import '@lwc/synthetic-shadow'; // Shadow DOMをポリフィル
 import { createElement } from 'lwc';
 import MyApp from 'my/app';
 
