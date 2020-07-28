@@ -20,11 +20,19 @@
             </p>
         </div>
         <div>
-            <button class="slds-button slds-button_brand" onclick={handleClick}>
-                Production Login
+            <button
+                class="slds-button slds-button_brand"
+                onclick={handleClick}
+                data-env="production"
+            >
+                Login to Production Org
             </button>
-            <button class="slds-button slds-button_brand" onclick={handleClick}>
-                Sandbox Login
+            <button
+                class="slds-button slds-button_brand"
+                onclick={handleClick}
+                data-env="sandbox"
+            >
+                Login to Sandbox Org
             </button>
         </div>
     </div>
