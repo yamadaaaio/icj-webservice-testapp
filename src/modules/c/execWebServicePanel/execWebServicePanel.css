@@ -1,0 +1,123 @@
+:host {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+:host .slds-box {
+    background-color: #fff;
+    padding: 0.5rem;
+}
+
+.icj-request-panel {
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+}
+
+.icj-request-panel-top {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.icj-object-type,
+.icj-external-id-field,
+.icj-web-service-method {
+    min-width: 300px;
+    width: 25%;
+}
+
+.icj-request-panel-middle {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.icj-request-panel-bottom {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    width: 100%;
+}
+
+.icj-json-records {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 100%;
+}
+
+.icj-json-records .slds-form-element__control {
+    display: flex;
+    flex-grow: 1;
+}
+
+.icj-response-panel {
+    height: 60%;
+    display: flex;
+    flex-direction: row;
+}
+
+.icj-response-panel-left {
+    width: 20%;
+    height: 100%;
+}
+
+.icj-response-panel-right {
+    width: 80%;
+    height: 100%;
+}
+
+.icj-result-table-scroller {
+    border: 1px solid #dddbda;
+}
+
+.icj-result-table {
+    border-top: none;
+    border-bottom: none;
+}
+
+.icj-result-table thead tr {
+    border-top: none;
+    border-bottom: none;
+}
+
+.icj-result-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-top: none;
+    border-bottom: none;
+}
+
+.icj-result-table thead th::after {
+    content: '';
+    width: 100%;
+    border-bottom: 1px solid #dddbda;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.icj-result-table tbody td {
+    overflow: hidden;
+    overflow-wrap: break-word;
+    white-space: break-spaces;
+}
+
+.icj-result-table tbody tr:first-child td {
+    border-top: none;
+}
+
+.icj-combobox__input--readonly {
+    border-color: #dddbda;
+    padding-left: 0.75rem;
+    cursor: pointer;
+}
+
+.icj-combobox__input--readonly:focus {
+    border-color: #1589ee;
+    box-shadow: 0 0 3px #0070d2;
+}

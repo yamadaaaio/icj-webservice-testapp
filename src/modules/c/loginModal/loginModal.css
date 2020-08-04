@@ -1,0 +1,13 @@
+.icj-modal-container {
+    width: 25rem;
+    min-width: 25rem;
+}
+
+.icj-modal-content {
+    text-align: center;
+}
+
+.icj-button-container {
+    display: inline-block;
+    margin: 0.25rem;
+}

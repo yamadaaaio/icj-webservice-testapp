@@ -1,0 +1,805 @@
+<template>
+    <div class="icj-request-panel slds-box slds-m-around_x-small">
+        <div class="icj-request-panel-top">
+            <div class="icj-object-type">
+                <c-search-combo-box
+                    name="object-type"
+                    label="オブジェクト"
+                    is-loading={sObjectSource.isLoading}
+                    items={sObjectSource.items}
+                    onfocus={focusObjectType}
+                    onkeyup={changeObjectType}
+                    onselectitem={selectObjectType}
+                >
+                </c-search-combo-box>
+            </div>
+            <div class="icj-external-id-field slds-m-left_small">
+                <c-search-combo-box
+                    name="external-id-field"
+                    label="外部ID項目"
+                    is-loading={externalIdFieldSource.isLoading}
+                    items={externalIdFieldSource.items}
+                    onfocus={focusExternalIdField}
+                    onkeyup={changeExternalIdField}
+                    onselectitem={selectExternalIdField}
+                >
+                </c-search-combo-box>
+            </div>
+        </div>
+        <div class="icj-request-panel-middle">
+            <div class="icj-json-records slds-form-element">
+                <label class="slds-form-element__label" for="json-records"
+                    >JSONレコードリスト (json_records)</label
+                >
+                <div class="slds-form-element__control">
+                    <textarea
+                        id="json-records"
+                        class="icj-json-records__input slds-textarea"
+                        placeholder="JSONを入力"
+                    ></textarea>
+                </div>
+            </div>
+            <div class="icj-add-invalid-json slds-form-element">
+                <div class="slds-form-element__control">
+                    <label
+                        class="slds-form-element__label"
+                        for="add-invalid-json"
+                        >リクエストに不正なJSONレコードを追加</label
+                    >
+                    <div class="slds-checkbox">
+                        <input
+                            type="checkbox"
+                            name="options"
+                            id="add-invalid-json"
+                        />
+                        <label
+                            class="slds-checkbox__label"
+                            for="add-invalid-json"
+                        >
+                            <span class="slds-checkbox_faux"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="icj-request-panel-bottom">
+            <div class="icj-web-service-method slds-form-element">
+                <label class="slds-form-element__label" for="web-service-method"
+                    >メソッド</label
+                >
+                <div class="slds-form-element__control">
+                    <div class="slds-combobox_container">
+                        <div
+                            class="icj-web-service-method__combobox slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click"
+                        >
+                            <div
+                                class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                            >
+                                <input
+                                    type="text"
+                                    class="icj-web-service-method__input icj-combobox__input--readonly slds-input slds-combobox__input"
+                                    id="web-service-method"
+                                    onfocus={openMethods}
+                                    onblur={closeMethods}
+                                    readonly
+                                    value="insertRecords"
+                                />
+                                <span
+                                    class="slds-icon_container slds-icon-utility-down"
+                                >
+                                    <svg
+                                        class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default"
+                                    >
+                                        <use
+                                            xlink:href="./resources/slds/icons/utility-sprite/svg/symbols.svg#down"
+                                        ></use>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div
+                                class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid"
+                            >
+                                <ul class="slds-listbox slds-listbox_vertical">
+                                    <template
+                                        for:each={methods}
+                                        for:item="method"
+                                    >
+                                        <li
+                                            key={method}
+                                            class="slds-listbox__item"
+                                            onmousedown={selectMethod}
+                                            data-method={method}
+                                        >
+                                            <div
+                                                class="slds-listbox__option slds-listbox__option_plain"
+                                            >
+                                                <div
+                                                    class="slds-text-body_regular"
+                                                >
+                                                    {method}
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-m-left_small">
+                <button
+                    type="button"
+                    class="slds-button slds-button_brand"
+                    onclick={executeWebService}
+                >
+                    Webサービス実行
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="icj-response-panel slds-box slds-m-around_x-small">
+        <div class="icj-response-panel-left">
+            <div class="slds-form-element slds-form-element_readonly">
+                <span class="slds-form-element__label"
+                    >レコード件数 (record_count)</span
+                >
+                <div class="slds-form-element__control">
+                    <div class="slds-form-element__static">0</div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-form-element_readonly">
+                <span class="slds-form-element__label"
+                    >追加件数 (insert_count)</span
+                >
+                <div class="slds-form-element__control">
+                    <div class="slds-form-element__static">0</div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-form-element_readonly">
+                <span class="slds-form-element__label"
+                    >更新件数 (update_count)</span
+                >
+                <div class="slds-form-element__control">
+                    <div class="slds-form-element__static">0</div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-form-element_readonly">
+                <span class="slds-form-element__label"
+                    >削除件数 (delete_count)</span
+                >
+                <div class="slds-form-element__control">
+                    <div class="slds-form-element__static">0</div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-form-element_readonly">
+                <span class="slds-form-element__label"
+                    >エラー件数 (error_count)</span
+                >
+                <div class="slds-form-element__control">
+                    <div class="slds-form-element__static">0</div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-form-element_readonly">
+                <span class="slds-form-element__label"
+                    >エラーコード (error_code)</span
+                >
+                <div class="slds-form-element__control">
+                    <div class="slds-form-element__static">ANY</div>
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <span class="slds-form-element__label"
+                    >エラー詳細 (error_description)</span
+                >
+                <div class="slds-form-element__control slds-border_bottom">
+                    <div
+                        class="slds-form-element__static"
+                        style="max-height: 100px; overflow-y: auto;"
+                    >
+                        <p>
+                            123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="icj-response-panel-right slds-m-left_medium">
+            <div class="slds-form-element" style="height: 100%;">
+                <span class="slds-form-element__label"
+                    >レコード処理結果 (record_results)</span
+                >
+                <div class="slds-form-element__control" style="height: 100%;">
+                    <div
+                        class="icj-result-table-scroller slds-scrollable_y"
+                        style="height: 95%;"
+                    >
+                        <table
+                            class="icj-result-table slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered"
+                        >
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">
+                                        <div
+                                            class="slds-truncate"
+                                            title="Salesforce Id"
+                                        >
+                                            Salesforce Id<br />(salesforce_id)
+                                        </div>
+                                    </th>
+                                    <th scope="col">
+                                        <div
+                                            class="slds-truncate"
+                                            title="外部ID"
+                                        >
+                                            外部ID<br />(external_id)
+                                        </div>
+                                    </th>
+                                    <th scope="col">
+                                        <div
+                                            class="slds-truncate"
+                                            title="成功フラグ"
+                                        >
+                                            成功フラグ<br />(is_success)
+                                        </div>
+                                    </th>
+                                    <th scope="col">
+                                        <div
+                                            class="slds-truncate"
+                                            title="作成フラグ"
+                                        >
+                                            作成フラグ<br />(is_created)
+                                        </div>
+                                    </th>
+                                    <th scope="col">
+                                        <div
+                                            class="slds-truncate"
+                                            title="エラーコード"
+                                        >
+                                            エラーコード<br />(error_code)
+                                        </div>
+                                    </th>
+                                    <th scope="col">
+                                        <div
+                                            class="slds-truncate"
+                                            title="エラー詳細"
+                                        >
+                                            エラー詳細<br />(error_description)
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td
+                                        data-label="Opportunity Name"
+                                        scope="row"
+                                    >
+                                        <div title="Cloudhub">
+                                            003XXXXXXXXXXXXXXX
+                                        </div>
+                                    </td>
+                                    <td data-label="Account Name">
+                                        <div title="Cloudhub">01200800001</div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div title="4/14/2015">true</div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div title="Prospecting">true</div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div title="20%"></div>
+                                    </td>
+                                    <td data-label="Amount">
+                                        <div
+                                            style="
+                                                max-width: 30%;
+                                                max-height: 100px;
+                                                overflow-y: auto;
+                                            "
+                                        >
+                                            <p>
+                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

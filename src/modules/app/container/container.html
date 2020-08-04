@@ -1,0 +1,48 @@
+<template>
+    <c-spinner if:true={isLoading} size="large"></c-spinner>
+    <template if:false={isLoggedIn}>
+        <c-login-modal></c-login-modal>
+    </template>
+    <div class="icj-app">
+        <div class="icj-app-header">
+            <!-- header -->
+            <c-header></c-header>
+        </div>
+        <div class="icj-app-body">
+            <!-- body -->
+            <div class="slds-tabs_default icj-tabs">
+                <ul class="slds-tabs_default__nav">
+                    <template for:each={tabs} for:item="tab">
+                        <li
+                            key={tab.name}
+                            class={tab.className}
+                            title={tab.title}
+                        >
+                            <a
+                                class="slds-tabs_default__link icj-tab-item"
+                                data-tab-name={tab.name}
+                                onclick={handleChangeTab}
+                            >
+                                {tab.title}
+                            </a>
+                        </li>
+                    </template>
+                </ul>
+                <div class="icj-tab-content-container">
+                    <div
+                        class="slds-tabs_default__content icj-tab-content slds-hide"
+                        data-tab-name="execWebService"
+                    >
+                        <c-exec-web-service-panel></c-exec-web-service-panel>
+                    </div>
+                    <div
+                        class="slds-tabs_default__content icj-tab-content slds-hide"
+                        data-tab-name="createJson"
+                    >
+                        <c-create-json-panel></c-create-json-panel>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

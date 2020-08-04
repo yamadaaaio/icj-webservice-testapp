@@ -1,3 +1,12 @@
+# env
+.env
+
+# Sample App
+src/modules/my
+
+# SLDS
+src/resources/slds
+
 # Log files
 logs
 *.log

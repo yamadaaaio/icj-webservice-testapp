@@ -5,10 +5,13 @@
     "dependencies": {
         "@salesforce-ux/design-system": "^2.12.2",
         "compression": "^1.7.4",
+        "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "helmet": "^3.23.3",
         "jsforce": "^1.9.3",
-        "jsforce-ajax-proxy": "^1.0.0"
+        "jsforce-ajax-proxy": "^1.0.0",
+        "redux": "^4.0.5",
+        "redux-thunk": "^2.3.0"
     },
     "devDependencies": {
         "eslint": "^7.5.0",
@@ -41,8 +44,8 @@
     },
     "repository": "hsol-myamada/",
     "scripts": {
-        "build": "lwc-services build -m production",
-        "build:development": "lwc-services build",
+        "build": "lwc-services build -m production -w scripts/webpack.config.js",
+        "build:development": "lwc-services build -w scripts/webpack.config.js",
         "lint": "eslint ./src/**/*.js",
         "prettier": "prettier --write \"**/*.{css,html,js,json,md,ts,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{css,html,js,json,md,ts,yaml,yml}\"",
@@ -51,6 +54,6 @@
         "test:unit:coverage": "lwc-services test:unit --coverage",
         "test:unit:debug": "lwc-services test:unit --debug",
         "test:unit:watch": "lwc-services test:unit --watch",
-        "watch": "lwc-services watch"
+        "watch": "lwc-services watch -w scripts/webpack.config.js"
     }
 }

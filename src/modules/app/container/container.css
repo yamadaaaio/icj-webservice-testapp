@@ -1,0 +1,31 @@
+.icj-app {
+    height: 100%;
+    width: 100%;
+}
+
+.icj-app-header {
+    width: 100%;
+}
+
+.icj-app-body {
+    height: 100%;
+}
+
+.icj-tabs {
+    height: 100%;
+}
+
+.icj-header__item-action {
+    cursor: pointer;
+}
+
+.icj-tab-content-container {
+    height: 100%;
+    background-color: #b0c4df;
+}
+
+.icj-tab-content {
+    height: calc(100% - 5.625rem);
+    width: 100%;
+    padding: 0;
+}
