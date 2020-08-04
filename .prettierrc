@@ -7,5 +7,6 @@
             "files": "**/*.html",
             "options": { "parser": "lwc" }
         }
-    ]
+    ],
+    "jsxBracketSameLine": true
 }
