@@ -1,16 +1,10 @@
 <template>
     <div class="slds-form-element">
-        <label class="slds-form-element__label" for="combobox-input"
-            >{comboBoxLabel}</label
-        >
+        <label class="slds-form-element__label" for="combobox-input">{comboBoxLabel}</label>
         <div class="slds-form-element__control">
             <div class="slds-combobox_container">
-                <div
-                    class="icj-combobox slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click"
-                >
-                    <div
-                        class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
-                    >
+                <div class="icj-combobox slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click">
+                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
                         <input
                             type="text"
                             class="icj-combobox__input slds-input slds-combobox__input"
@@ -19,70 +13,44 @@
                             onfocus={handleFocus}
                             onblur={handleBlur}
                             onkeyup={handleKeyUp}
-                            autocomplete="off"
-                        />
+                            autocomplete="off" />
                         <span
-                            class="slds-icon_container slds-icon-utility-search"
-                        >
+                            class="slds-icon_container slds-icon-utility-search">
                             <svg
-                                class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default"
-                            >
+                                class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default">
                                 <use
-                                    xlink:href="./resources/slds/icons/utility-sprite/svg/symbols.svg#search"
-                                ></use>
+                                    xlink:href="./resources/slds/icons/utility-sprite/svg/symbols.svg#search"></use>
                             </svg>
                         </span>
                     </div>
                     <div
-                        class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid"
-                    >
+                        class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid">
                         <ul class="slds-listbox slds-listbox_vertical">
                             <li if:true={isLoading} class="slds-listbox__item">
-                                <div
-                                    class="slds-align_absolute-center slds-p-top_medium"
-                                >
-                                    <div
-                                        role="status"
-                                        class="slds-spinner slds-spinner_x-small slds-spinner_inline"
-                                    >
-                                        <span class="slds-assistive-text"
-                                            >Loading</span
-                                        >
+                                <div class="slds-align_absolute-center slds-p-top_medium">
+                                    <div role="status" class="slds-spinner slds-spinner_x-small slds-spinner_inline">
+                                        <span class="slds-assistive-text">Loading</span>
                                         <div class="slds-spinner__dot-a"></div>
                                         <div class="slds-spinner__dot-b"></div>
                                     </div>
                                 </div>
                             </li>
-                            <li
-                                if:true={itemsNotFound}
-                                class="slds-listbox__item"
-                            >
-                                <div
-                                    class="slds-listbox__option slds-listbox__option_plain slds-text-color_weak"
-                                >
+                            <li if:true={itemsNotFound} class="slds-listbox__item">
+                                <div class="slds-listbox__option slds-listbox__option_plain slds-text-color_weak">
                                     {notFoundText}
                                 </div>
                             </li>
                             <template if:true={items}>
                                 <template for:each={items} for:item="item">
-                                    <li
-                                        key={item.name}
+                                    <li key={item.name}
                                         class="slds-listbox__item"
                                         onmousedown={handleClickItem}
-                                        data-name={item.name}
-                                    >
-                                        <div
-                                            class="slds-listbox__option slds-listbox__option_plain"
-                                        >
-                                            <div
-                                                class="slds-text-body_regular"
-                                                style="font-weight: bold;"
-                                            >
+                                        data-name={item.name}>
+                                        <div class="slds-listbox__option slds-listbox__option_plain">
+                                            <div class="slds-text-body_regular" style="font-weight: bold;">
                                                 {item.label}
                                             </div>
-                                            <div
-                                                class="slds-text-body_small slds-text-color_weak"
-                                            >
+                                            <div class="slds-text-body_small slds-text-color_weak">
                                                 {item.name}
                                             </div>
                                         </div>

@@ -13,32 +13,21 @@
             <div class="slds-tabs_default icj-tabs">
                 <ul class="slds-tabs_default__nav">
                     <template for:each={tabs} for:item="tab">
-                        <li
-                            key={tab.name}
-                            class={tab.className}
-                            title={tab.title}
-                        >
-                            <a
-                                class="slds-tabs_default__link icj-tab-item"
-                                data-tab-name={tab.name}
-                                onclick={handleChangeTab}
-                            >
+                        <li key={tab.name} class={tab.className} title={tab.title}>
+                            <a class="slds-tabs_default__link icj-tab-item"
+                               data-tab-name={tab.name} onclick={handleChangeTab}>
                                 {tab.title}
                             </a>
                         </li>
                     </template>
                 </ul>
                 <div class="icj-tab-content-container">
-                    <div
-                        class="slds-tabs_default__content icj-tab-content slds-hide"
-                        data-tab-name="execWebService"
-                    >
+                    <div class="slds-tabs_default__content icj-tab-content slds-hide"
+                         data-tab-name="execWebService">
                         <c-exec-web-service-panel></c-exec-web-service-panel>
                     </div>
-                    <div
-                        class="slds-tabs_default__content icj-tab-content slds-hide"
-                        data-tab-name="createJson"
-                    >
+                    <div class="slds-tabs_default__content icj-tab-content slds-hide"
+                         data-tab-name="createJson">
                         <c-create-json-panel></c-create-json-panel>
                     </div>
                 </div>
