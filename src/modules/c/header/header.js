@@ -29,7 +29,18 @@ export default class Header extends LightningElement {
     }
 
     handleClickLogout() {
+
         sfdc.logout();
-        store.dispatch(actions.ui.loggedout());
+
+        // ブラウザにログイン情報が残るため、./secur/logout.jsp にアクセスして完全にログアウトする
+        const logoutIframeContainer = this.template.querySelector('.icj-logout-iframe-container');
+        const iframe = document.createElement('iframe');
+        iframe.src = `${this.user.urls.custom_domain}/secur/logout.jsp`;
+        logoutIframeContainer.appendChild(iframe);
+        setTimeout(() => {
+            // アクセスしたら消す
+            logoutIframeContainer.removeChild(iframe);
+            store.dispatch(actions.ui.loggedout());
+        }, 1000);
     }
 }
