@@ -1,61 +1,21 @@
 <template>
-    <div class="icj-request-panel slds-box slds-var-m-around_x-small">
-        <div class="icj-request-panel-top">
-            <div class="icj-object-type">
-                <c-search-combo-box
-                    name="object_type"
-                    label="オブジェクト"
-                    is-loading={sObjectSource.isLoading}
-                    items={sObjectSource.items}
-                    onfocus={focusObjectType}
-                    onkeyup={changeObjectType}
-                    onselectitem={selectObjectType}>
-                </c-search-combo-box>
-            </div>
-            <div class="icj-external-id-field slds-var-m-left_small">
-                <c-search-combo-box
-                    name="external_id_field"
-                    label="外部ID項目"
-                    is-loading={externalIdFieldSource.isLoading}
-                    items={externalIdFieldSource.items}
-                    onfocus={focusExternalIdField}
-                    onkeyup={changeExternalIdField}
-                    onselectitem={selectExternalIdField}>
-                </c-search-combo-box>
-            </div>
-        </div>
-        <div class="icj-request-panel-middle">
-            <div class="icj-json-record slds-form-element">
-                <label class="slds-form-element__label" for="json-record">JSONレコードリスト (json_record)</label>
-                <div class="slds-form-element__control">
-                    <textarea
-                        id="json-record"
-                        class="icj-json-record__input slds-textarea"
-                        placeholder="JSONを入力"></textarea>
-                </div>
-                <div class="slds-text-body_small slds-text-color_inverse-weak">
-                    <p>
-                        JSONArray [...] で指定してください。<br/>
-                        ※リスト形式でない、または不正なJSON文字列の場合は、指定された文字列をそのままリクエストに追加します。
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="icj-request-panel-bottom">
-            <div class="icj-web-service-method slds-form-element">
+    <c-spinner if:true={isExecuting} size="large"></c-spinner>
+    <div class="icj-request-panel slds-grid slds-grid_vertical slds-box slds-var-m-around_x-small">
+        <div class="slds-grid">
+            <div class="icj-web-service-method slds-col slds-size_1-of-4 slds-var-p-right_small slds-form-element">
                 <label class="slds-form-element__label" for="web-service-method">メソッド</label>
                 <div class="slds-form-element__control">
                     <div class="slds-combobox_container">
                         <div class="icj-web-service-method__combobox slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click">
                             <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
                                 <input
+                                    readonly
                                     type="text"
                                     class="icj-web-service-method__input icj-combobox__input--readonly slds-input slds-combobox__input"
                                     id="web-service-method"
                                     onfocus={openMethods}
                                     onblur={closeMethods}
-                                    readonly
-                                    value="insertRecords"/>
+                                    value={selectedMethod} />
                                 <span class="slds-icon_container slds-icon-utility-down">
                                     <svg class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default">
                                         <use xlink:href="./resources/slds/icons/utility-sprite/svg/symbols.svg#down"></use>
@@ -79,149 +39,192 @@
                     </div>
                 </div>
             </div>
-            <div class="slds-var-m-left_small">
-                <button type="button" class="slds-button slds-button_brand" onclick={executeWebService}>
-                    Webサービス実行
-                </button>
+            <div class="icj-object-type slds-col slds-size_1-of-4 slds-var-p-right_small">
+                <c-search-combo-box
+                    name="object_type"
+                    label="オブジェクト"
+                    is-loading={sObjectSource.isLoading}
+                    items={sObjectSource.items}
+                    onfocus={focusObjectType}
+                    onkeyup={changeObjectType}
+                    onselectitem={selectObjectType}>
+                </c-search-combo-box>
+            </div>
+            <div class="icj-external-id-field slds-col slds-size_1-of-4 slds-var-p-right_small">
+                <c-search-combo-box
+                    name="external_id_field"
+                    label="外部ID項目"
+                    is-loading={externalIdFieldSource.isLoading}
+                    items={externalIdFieldSource.items}
+                    onfocus={focusExternalIdField}
+                    onkeyup={changeExternalIdField}
+                    onselectitem={selectExternalIdField}>
+                </c-search-combo-box>
+            </div>
+        </div>
+        <div class="slds-grid" style="flex-grow: 1;">
+            <div class="slds-col slds-form-element" style="display: flex; flex-direction: column;">
+                <label class="slds-form-element__label" for="json-record">JSONレコードリスト (json_record)</label>
+                <div class="slds-form-element__control" style="display: flex; flex-grow: 1;">
+                    <textarea
+                        id="json-record"
+                        class="icj-json-record__input slds-textarea"
+                        placeholder="JSONを入力"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-var-m-top_xx-small">
+            <div class="slds-col slds-grow-none slds-var-m-right_xx-small">
+                <input type="button" class="slds-button slds-button_brand" 
+                       value="実行" onclick={executeWebService} />
+            </div>
+            <div class="slds-col">
+                <p class="slds-text-body_small slds-text-color_inverse-weak">
+                    JSONレコードリストはJSONArray [...] で指定してください。<br/>
+                    ※リスト形式でない、または不正なJSON文字列の場合は、指定された文字列をJSONレコードリストの1件目に追加します。
+                </p>
             </div>
         </div>
     </div>
     <div class="icj-response-panel slds-box slds-var-m-around_x-small">
-        <div class="icj-response-panel-left">
-            <div class="slds-form-element slds-form-element_readonly">
-                <span class="slds-form-element__label">レコード件数 (record_count)</span>
-                <div class="slds-form-element__control">
-                    <div class="slds-form-element__static">0</div>
+        <div if:true={notYet}>
+            <p class="slds-text-color_inverse-weak">実行結果がありません。</p>
+        </div>
+        <div if:true={isExecuteFailed}>
+            <p class="icj-error-msg slds-text-color_error">{errorMsg}</p>
+        </div>
+        <template if:true={isExecuteSucceed}>
+            <div class="slds-grid" style="height: 100%">
+                <div class="slds-col slds-size_1-of-4 slds-form">
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">レコード件数 (record_count)</span>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__static">{response.record_count}</div>
+                        </div>
+                    </div>
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">追加件数 (insert_count)</span>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__static">{response.insert_count}</div>
+                        </div>
+                    </div>
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">更新件数 (update_count)</span>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__static">{response.update_count}</div>
+                        </div>
+                    </div>
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">削除件数 (delete_count)</span>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__static">{response.delete_count}</div>
+                        </div>
+                    </div>
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">エラー件数 (error_count)</span>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__static">{response.error_count}</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="slds-form-element slds-form-element_readonly">
-                <span class="slds-form-element__label">追加件数 (insert_count)</span>
-                <div class="slds-form-element__control">
-                    <div class="slds-form-element__static">0</div>
-                </div>
-            </div>
-            <div class="slds-form-element slds-form-element_readonly">
-                <span class="slds-form-element__label">更新件数 (update_count)</span>
-                <div class="slds-form-element__control">
-                    <div class="slds-form-element__static">0</div>
-                </div>
-            </div>
-            <div class="slds-form-element slds-form-element_readonly">
-                <span class="slds-form-element__label">削除件数 (delete_count)</span>
-                <div class="slds-form-element__control">
-                    <div class="slds-form-element__static">0</div>
-                </div>
-            </div>
-            <div class="slds-form-element slds-form-element_readonly">
-                <span class="slds-form-element__label">エラー件数 (error_count)</span>
-                <div class="slds-form-element__control">
-                    <div class="slds-form-element__static">0</div>
-                </div>
-            </div>
-            <div class="slds-form-element slds-form-element_readonly">
-                <span class="slds-form-element__label">エラーコード (error_code)</span>
-                <div class="slds-form-element__control">
-                    <div class="slds-form-element__static">ANY</div>
-                </div>
-            </div>
-            <div class="slds-form-element">
-                <span class="slds-form-element__label">エラー詳細 (error_description)</span>
-                <div class="slds-form-element__control slds-border_bottom">
-                    <div
-                        class="slds-form-element__static"
-                        style="max-height: 100px; overflow-y: auto;">
-                        <p>
-                            123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
-                        </p>
+                <div class="slds-grid slds-grid_vertical slds-size_3-of-4 slds-var-p-left_x-small" style="height: 100%">
+                    <div if:true={response.error_code} class="slds-col">
+                        <div class="slds-form-element slds-form-element_readonly">
+                            <span class="slds-form-element__label">エラーコード (error_code)</span>
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element__static slds-text-color_error">{response.error_code}</div>
+                            </div>
+                        </div>
+                        <div class="slds-form-element">
+                            <span class="slds-form-element__label">エラー詳細 (error_description)</span>
+                            <div class="slds-form-element__control slds-border_bottom">
+                                <div class="icj-error-description slds-form-element__static">
+                                    <p class="slds-text-color_error">{response.error_description}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div if:true={response.dml_result} class="slds-col slds-form" style="height: 100%;">
+                        <div class="slds-form-element" style="height: 100%">
+                            <span class="slds-form-element__label">レコード処理結果 (dml_result)</span>
+                            <div class="slds-form-element__control" style="height: 100%;">
+                                <div class="icj-result-table-scroller slds-scrollable_y">
+                                    <table class="icj-result-table slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="No.">
+                                                        No.
+                                                    </div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="Salesforce Id">
+                                                        Salesforce Id<br />(salesforce_id)
+                                                    </div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="外部ID">
+                                                        外部ID<br />(external_id)
+                                                    </div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="成功フラグ">
+                                                        成功フラグ<br />(is_success)
+                                                    </div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="成功フラグ">
+                                                        作成フラグ<br />(is_created)
+                                                    </div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="成功フラグ">
+                                                        エラーコード<br />(error_code)
+                                                    </div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="slds-truncate" title="成功フラグ">
+                                                        エラー詳細<br />(error_description)
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={response.dml_result} for:item="dmlResult">
+                                                <tr class="slds-hint-parent" key={dmlResult.row_no}>
+                                                    <td scope="row">
+                                                        <div>{dmlResult.row_no}</div>
+                                                    </td>
+                                                    <td scope="row">
+                                                        <div>{dmlResult.salesforce_id}</div>
+                                                    </td>
+                                                    <td scope="row">
+                                                        <div>{dmlResult.external_id}</div>
+                                                    </td>
+                                                    <td scope="row">
+                                                        <div>{dmlResult.is_success}</div>
+                                                    </td>
+                                                    <td scope="row">
+                                                        <div>{dmlResult.is_created}</div>
+                                                    </td>
+                                                    <td scope="row">
+                                                        <div class="slds-text-color_error">{dmlResult.error_code}</div>
+                                                    </td>
+                                                    <td scope="row">
+                                                        <div class="icj-error-description slds-text-color_error">
+                                                            <p>{dmlResult.error_description}</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="icj-response-panel-right slds-var-m-left_medium">
-            <div class="slds-form-element" style="height: 100%;">
-                <span class="slds-form-element__label">レコード処理結果 (record_results)</span>
-                <div class="slds-form-element__control" style="height: 100%;">
-                    <div class="icj-result-table-scroller slds-scrollable_y">
-                        <table class="icj-result-table slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
-                            <thead>
-                                <tr class="slds-line-height_reset">
-                                    <th scope="col">
-                                        <div class="slds-truncate" title="No.">
-                                            No.
-                                        </div>
-                                    </th>
-                                    <th scope="col">
-                                        <div class="slds-truncate" title="Salesforce Id">
-                                            Salesforce Id<br />(salesforce_id)
-                                        </div>
-                                    </th>
-                                    <th scope="col">
-                                        <div class="slds-truncate" title="外部ID">
-                                            外部ID<br />(external_id)
-                                        </div>
-                                    </th>
-                                    <th scope="col">
-                                        <div class="slds-truncate" title="成功フラグ">
-                                            成功フラグ<br />(is_success)
-                                        </div>
-                                    </th>
-                                    <th scope="col">
-                                        <div class="slds-truncate" title="成功フラグ">
-                                            作成フラグ<br />(is_created)
-                                        </div>
-                                    </th>
-                                    <th scope="col">
-                                        <div class="slds-truncate" title="成功フラグ">
-                                            エラーコード<br />(error_code)
-                                        </div>
-                                    </th>
-                                    <th scope="col">
-                                        <div class="slds-truncate" title="成功フラグ">
-                                            エラー詳細<br />(error_description)
-                                        </div>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="slds-hint-parent">
-                                    <td scope="row">
-                                        <div>1</div>
-                                    </td>
-                                    <td data-label="Opportunity Name" scope="row">
-                                        <div title="Cloudhub">
-                                            003XXXXXXXXXXXXXXX
-                                        </div>
-                                    </td>
-                                    <td data-label="Account Name">
-                                        <div title="Cloudhub">01200800001</div>
-                                    </td>
-                                    <td data-label="Close Date">
-                                        <div title="4/14/2015">true</div>
-                                    </td>
-                                    <td data-label="Prospecting">
-                                        <div title="Prospecting">true</div>
-                                    </td>
-                                    <td data-label="Confidence">
-                                        <div title="20%"></div>
-                                    </td>
-                                    <td data-label="Amount">
-                                        <div
-                                            style="
-                                                max-width: 30%;
-                                                max-height: 100px;
-                                                overflow-y: auto;
-                                            ">
-                                            <p>
-                                                123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
-                                            </p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </template>
     </div>
 </template>

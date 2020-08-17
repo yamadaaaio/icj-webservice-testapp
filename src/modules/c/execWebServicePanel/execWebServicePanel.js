@@ -33,6 +33,11 @@ function filterItems(rawItems, keyword) {
 export default class ExecWebServicePanel extends LightningElement {
     @track sObjectSource;
     @track externalIdFieldSource;
+    @track response;
+    isExecuting;
+    isExecuteSucceed;
+    isExecuteFailed;
+    errorMsg;
 
     methods = [
         'insertRecords',
@@ -49,8 +54,12 @@ export default class ExecWebServicePanel extends LightningElement {
         this.externalIdFieldSource = { ...INITIAL_SOURCE };
     }
 
+    get notYet() {
+        return (!this.isExecuteSucceed) && (!this.isExecuteFailed);
+    }
+
     @wire(connectStore, { store })
-    storeUpdated({ webServiceUi, sObjects, sObject }) {
+    storeUpdated({ webServiceUi, sObjects, sObject, soap }) {
         if (!this.sObjectSource.rawItems) {
             const source = this.sObjectSource;
             source.isLoading = sObjects.isFetching;
@@ -103,6 +112,38 @@ export default class ExecWebServicePanel extends LightningElement {
             this.externalIdFieldSource = {
                 ...INITIAL_SOURCE
             };
+        }
+        
+        if (soap) {
+            this.isExecuting = soap.isExecuting;
+        }
+
+        if (soap.response) {
+            this.isExecuteSucceed = true;
+            this.isExecuteFailed = false;
+            this.response = { ...soap.response.result };
+            if (this.response.dml_result instanceof Array) {
+                let dmlResults = [];
+                let row_no = 1;
+                for (let dmlResult of this.response.dml_result) {
+                    dmlResults.push({
+                        row_no, ...dmlResult
+                    });
+                    row_no++;
+                }
+                this.response.dml_result = dmlResults;
+            } else {
+                if (!this.response.dml_result.$) {
+                    this.response.dml_result = [{ row_no: 1, ...this.response.dml_result }];
+                } else {
+                    this.response.dml_result = null;
+                }
+            }
+        } else if (soap.error) {
+            this.isExecuteSucceed = false;
+            this.isExecuteFailed = true;
+            this.errorMsg = `エラーが発生しました：\n${soap.error.stack}`;
+            console.error(soap.error);
         }
     }
 
@@ -165,12 +206,13 @@ export default class ExecWebServicePanel extends LightningElement {
         combobox.classList.remove(SLDS_IS_OPEN);
     }
 
+    selectedMethod = 'insertRecords';
     selectMethod(event) {
-        const selectedMethod = event.currentTarget.dataset.method;
+        this.selectedMethod = event.currentTarget.dataset.method;
         const combobox = this.template.querySelector(
             '.icj-web-service-method__input'
         );
-        combobox.value = selectedMethod;
+        combobox.value = this.selectedMethod;
     }
 
     executeWebService() {
@@ -180,12 +222,25 @@ export default class ExecWebServicePanel extends LightningElement {
         const external_id_field = this.template.querySelector(
             '.icj-external-id-field c-search-combo-box'
         ).value;
-        const json_record = this.template.querySelector(
-            '.icj-json-record__input'
-        ).value;
         const method = this.template.querySelector(
             '.icj-web-service-method__input'
         ).value;
+
+        const jsonString = this.template.querySelector(
+            '.icj-json-record__input'
+        ).value;
+
+        let json_record;
+        try {
+            const parsed = JSON.parse(jsonString);
+            if (parsed instanceof Array) {
+                json_record = parsed.map(record => JSON.stringify(record));
+            } else {
+                json_record = [ JSON.stringify(parsed) ];
+            }
+        } catch (e) {
+            json_record = [ jsonString ];
+        }
 
         store.dispatch(
             actions.soap.executeWebService(method, {
