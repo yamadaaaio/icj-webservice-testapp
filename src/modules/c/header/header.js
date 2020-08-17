@@ -21,6 +21,12 @@ export default class Header extends LightningElement {
             : '';
     }
 
+    get salesforceUrl() {
+        return this.user
+            ? `${this.user.urls.custom_domain}`
+            : '';
+    }
+
     @wire(connectStore, { store })
     storeUpdated({ ui }) {
         this.isLoggedIn = ui.isLoggedIn;

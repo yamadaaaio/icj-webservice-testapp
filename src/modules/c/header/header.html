@@ -29,8 +29,8 @@
                     </div>
                 </div>
                 <div class="slds-builder-header__utilities-item">
-                    <div
-                        class="slds-builder-header__item-label slds-media slds-media_center">
+                    <a class="slds-builder-header__item-action slds-media slds-media_center icj-header__item-action"
+                       href={salesforceUrl} target="_blank">
                         <div class="slds-media__figure">
                             <span
                                 class="slds-icon_container slds-icon-utility-builder slds-current-color">
@@ -41,12 +41,11 @@
                             </span>
                         </div>
                         <div class="slds-media__body">{userLabel}</div>
-                    </div>
+                    </a>
                 </div>
                 <div class="slds-builder-header__utilities-item">
-                    <a
-                        class="slds-builder-header__item-action slds-media slds-media_center icj-header__item-action"
-                        onclick={handleClickLogout}>
+                    <a class="slds-builder-header__item-action slds-media slds-media_center icj-header__item-action"
+                       onclick={handleClickLogout}>
                         <div class="slds-media__figure">
                             <span
                                 class="slds-icon_container slds-icon-utility-builder slds-current-color">
@@ -59,6 +58,14 @@
                         <div class="slds-media__body">ログアウト</div>
                     </a>
                     <div class="icj-logout-iframe-container"></div>
+                </div>
+                <div class="slds-builder-header__utilities-item">
+                    <a href="https://github.com/yamadaaaio/icj-webservice-testapp" 
+                       class="slds-builder-header__item-action slds-media slds-media_center" target="_blank">
+                        <span class="slds-avatar">
+                          <img src="./resources/GitHub-Mark-Light-64px.png">
+                        </span>
+                    </a>
                 </div>
             </div>
         </template>
