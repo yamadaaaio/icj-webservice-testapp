@@ -11,8 +11,6 @@
 
 .icj-request-panel {
     height: 40%;
-    display: flex;
-    flex-direction: column;
 }
 
 .icj-object-type,
