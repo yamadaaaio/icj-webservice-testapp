@@ -180,8 +180,8 @@ export default class ExecWebServicePanel extends LightningElement {
         const external_id_field = this.template.querySelector(
             '.icj-external-id-field c-search-combo-box'
         ).value;
-        const json_records = this.template.querySelector(
-            '.icj-json-records__input'
+        const json_record = this.template.querySelector(
+            '.icj-json-record__input'
         ).value;
         const method = this.template.querySelector(
             '.icj-web-service-method__input'
@@ -191,7 +191,7 @@ export default class ExecWebServicePanel extends LightningElement {
             actions.soap.executeWebService(method, {
                 object_type,
                 external_id_field,
-                json_records
+                json_record
             })
         );
     }

@@ -42,14 +42,14 @@
     width: 100%;
 }
 
-.icj-json-records {
+.icj-json-record {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     height: 100%;
 }
 
-.icj-json-records .slds-form-element__control {
+.icj-json-record .slds-form-element__control {
     display: flex;
     flex-grow: 1;
 }
@@ -71,6 +71,7 @@
 }
 
 .icj-result-table-scroller {
+    max-height: 95%;
     border: 1px solid #dddbda;
 }
 
@@ -109,6 +110,11 @@
 
 .icj-result-table tbody tr:first-child td {
     border-top: none;
+}
+
+.icj-result-table thead th:first-child,
+.icj-result-table tbody td:first-child {
+    padding-left: 0.5rem;
 }
 
 .icj-combobox__input--readonly {

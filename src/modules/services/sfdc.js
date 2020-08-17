@@ -9,7 +9,7 @@ export const PRODUCTION_LOGIN_URL = 'https://login.salesforce.com';
 export const SANDBOX_LOGIN_URL = 'https://test.salesforce.com';
 
 export const PACKAGE_NAMESPACE = 'tcrm';
-export const ICJ_LINKAGE_WEB_SERVICE = 'ICropJLinkageWebService';
+export const ICJ_LINKAGE_WEB_SERVICE = 'ICROPJLinkageWebService';
 
 export let connection;
 
@@ -101,9 +101,10 @@ async function doCallback(callback) {
             }
         );
     } catch (e) {
-        console.log(e);
+        console.error(e);
         localStorage.removeItem(CONECCTED_KEY);
         localStorage.removeItem(ACCESS_TOKEN_KEY);
         localStorage.removeItem(INSTANCE_URL_KEY);
+        callback(null, null);
     }
 }
