@@ -54,20 +54,22 @@ export default class SearchComboBox extends LightningElement {
         event.stopPropagation();
         const combobox = this.template.querySelector('.icj-combobox');
         combobox.classList.add(SLDS_IS_OPEN);
-        this.dispatchEvent(createCustomEvent('focus'));
         const input = this.template.querySelector('.icj-combobox__input');
         this.filter(input.value);
+        this.dispatchEvent(createCustomEvent('focus'));
     }
 
     handleBlur(event) {
         event.stopPropagation();
         const combobox = this.template.querySelector('.icj-combobox');
         combobox.classList.remove(SLDS_IS_OPEN);
+        this.dispatchEvent(createCustomEvent('blur'));
     }
 
     handleKeyUp(event) {
         event.stopPropagation();
         this.filter(event.target.value);
+        this.dispatchEvent(createCustomEvent('keyup', { keyword: event.target.value }));
     }
 
     handleClickItem(event) {
@@ -79,6 +81,5 @@ export default class SearchComboBox extends LightningElement {
 
     filter(keyword) {
         this.items = filterItems(this.rawItems, keyword);
-        console.log('filter:'+keyword);
     }
 }

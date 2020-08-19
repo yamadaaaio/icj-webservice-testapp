@@ -55,11 +55,19 @@ export default class ExecWebServicePanel extends LightningElement {
         }
 
         if (sObject[webServiceUi.objectType]) {
+
+            if (webServiceUi.objectType !== this.externalIdFieldSource.objectType) {
+                this.externalIdFieldSource = {
+                    ...INITIAL_SOURCE
+                };
+            }
+
             const source = this.externalIdFieldSource;
             const sObjectState = sObject[webServiceUi.objectType];
 
             if (!source.rawItems) {
                 source.isLoading = sObjectState.isFetching;
+                source.objectType = webServiceUi.objectType;
                 if (sObjectState.externalIdFields) {
                     source.rawItems = sObjectState.externalIdFields.map(
                         (describeResult) => {
@@ -126,6 +134,12 @@ export default class ExecWebServicePanel extends LightningElement {
 
     focusObjectType() {
         store.dispatch(actions.sObjects.fetchSObjectsIfNeeded());
+    }
+
+    changeObjectType(event) {
+        store.dispatch(
+            actions.webServiceUi.changeObjectType(event.detail.keyword)
+        );
     }
 
     selectObjectType(event) {
