@@ -3,6 +3,7 @@ import { LightningElement, wire, track } from 'lwc';
 import * as sfdc from '../../services/sfdc';
 import { store, connectStore } from '../../store/store';
 import actions from '../../store/actions';
+import * as tabs from './tabs';
 
 const SLDS_TAB_ITEM = 'slds-tabs_default__item';
 const SLDS_ACTIVE_TAB_ITEM = 'slds-tabs_default__item slds-is-active';
@@ -16,12 +17,12 @@ export default class AppContainer extends LightningElement {
     @track
     tabs = [
         {
-            name: 'execWebService',
+            name: tabs.EXEC_WEB_SERVICE,
             title: 'Webサービス実行',
             className: SLDS_TAB_ITEM
         },
         {
-            name: 'createJson',
+            name: tabs.CREATE_JSON,
             title: 'JSON生成',
             className: SLDS_TAB_ITEM
         }
@@ -62,7 +63,7 @@ export default class AppContainer extends LightningElement {
         if (user) {
             store.dispatch(actions.ui.loggedin(user, webService));
             store.dispatch(actions.ui.retrieveApiUsage());
-            store.dispatch(actions.ui.changeTab('execWebService'));
+            store.dispatch(actions.ui.changeTab(tabs.EXEC_WEB_SERVICE));
         }
     }
 

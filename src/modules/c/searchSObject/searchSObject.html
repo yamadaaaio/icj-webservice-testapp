@@ -1,0 +1,44 @@
+<template>
+    <div class="icj-search-sobject slds-grid slds-grid_vertical">
+        <c-spinner if:true={sObjectsSource.isLoading} size="large"></c-spinner>
+        <div class="slds-form">
+            <div class="slds-form-element slds-var-p-around_small">
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input 
+                        id="object" 
+                        type="text" 
+                        class="icj-search-object__input slds-input" 
+                        placeholder="オブジェクトを検索..." 
+                        onkeyup={filterSObject} />
+                    <span class="slds-icon_container slds-icon-utility-search">
+                        <svg class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default">
+                            <use xlink:href="./resources/slds/icons/utility-sprite/svg/symbols.svg#search"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div if:true={isNotFound} class="slds-var-m-around_small">
+            <p class="slds-text-color_inverse-weak">一致する項目が見つかりません。</p>
+        </div>
+        <div if:true={items} class="icj-object-list slds-tree_container">
+            <ul class="slds-tree">
+                <template for:each={items} for:item="item">
+                    <li key={item.name} data-name={item.name} onclick={selectSObject} role="treeitem">
+                        <div class="slds-tree__item">
+                            <button class="slds-button slds-button_icon slds-m-right_x-small slds-is-disabled"></button>
+                            <div class="slds-has-flexi-truncate">
+                                <div class="slds-truncate slds-text-body_regular" style="font-weight: bold;">
+                                    {item.label}
+                                </div>
+                                <div class="slds-truncate slds-text-body_small slds-text-color_weak">
+                                    {item.name}
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </div>
+</template>

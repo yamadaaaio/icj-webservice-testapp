@@ -1,3 +1,106 @@
 <template>
-    <h1>時間余ったら作る</h1>
+    <div class="slds-grid" style="height: 100%">
+        <div class="icj-field-list slds-col slds-size_1-of-4">
+            <c-search-s-object 
+                if:false={isSelectedSObject} 
+                onselect={handleSelectSObject}></c-search-s-object>
+            <c-search-field 
+                if:true={isSelectedSObject}
+                sobject={selectedSObject}
+                onselect={handleSelectField}
+                ondeselect={handleDeselectField}
+                onreturn={handleReturn}></c-search-field>
+        </div>
+        <div class="icj-data-list slds-col slds-size_3-of-4 slds-var-p-around_small">
+            <div if:true={isEmpty}>
+                <p class="slds-text-color_inverse-weak">項目を選択してください。</p>
+            </div>
+            <div if:false={isEmpty} class="slds-grid slds-grid_vertical" style="height: 100%;">
+
+                <div class="icj-button-group slds-col slds-grow-none slds-var-m-bottom_small">
+                    <input type="button" class="slds-button slds-button_neutral" 
+                           value="すべての値をクリア" onclick={clearAllValues} />
+                    <input type="button" class="slds-button slds-button_neutral" 
+                           value="すべての項目を削除" onclick={clearAllFields} />
+                    <input type="button" class="slds-button slds-button_brand" 
+                           value="Webサービス実行タブに反映" onclick={createJson} />
+                </div>
+                <div class="slds-col" style="overflow: hidden;">
+                    <div class="icj-scroller slds-scrollable">
+                        <div class="icj-data-list__container">
+                            <table class="icj-data-table slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                <colgroup>
+                                    <col style="width: 2.5rem;" />
+                                    <template for:each={fields} for:item="field">
+                                        <col key={field.fieldName} class="icj-data-table__column" />
+                                    </template>
+                                </colgroup>
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th scope="col">
+                                            <div class="slds-has-flexi-truncate">
+                                                <div class="slds-text-body_regular" style="font-weight: bold;">
+                                                    No.
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <template for:each={fields} for:item="field">
+                                            <th key={field.fieldName} scope="col">
+                                                <div class="slds-grid slds-grid_vertical">
+                                                    <div class="slds-grid slds-has-flexi-truncate">
+                                                        <div class="slds-col slds-grow-none slds-truncate">
+                                                            {field.fieldName}
+                                                        </div>
+                                                        <div class="slds-col slds-grow-none slds-col_bump-left">
+                                                            <button class="icj-icon-button slds-button slds-button_icon" 
+                                                                    title="Back" data-name={field.fieldName} onclick={removeField}>
+                                                                <svg class="slds-button__icon">
+                                                                    <use xlink:href="./resources/slds/icons/utility-sprite/svg/symbols.svg#close"></use>
+                                                                </svg>
+                                                                <span class="slds-assistive-text">Remove</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="slds-col">
+                                                        <div if:false={field.metadata.calculated} class="slds-text-body_small slds-text-color_weak">
+                                                            {field.metadata.type}
+                                                        </div>
+                                                        <div if:true={field.metadata.calculated} class="slds-text-body_small slds-text-color_weak">
+                                                            formula({field.metadata.type})
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                        </template>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={rows} for:item="row">
+                                        <tr key={row.key}>
+                                            <td>{row.rowNo}</td>
+                                            <template for:each={row.columns} for:item="col">
+                                                <td key={col.key}>
+                                                    <div class="slds-form-element">
+                                                        <div class="slds-form-element__control">
+                                                            <input 
+                                                                type="text" 
+                                                                class="icj-data-column slds-input" 
+                                                                data-column-key={col.key} 
+                                                                value={col.value} 
+                                                                onchange={changeColumnValue}
+                                                                onkeydown={moveCell}/>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>

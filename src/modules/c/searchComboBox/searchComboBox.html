@@ -14,16 +14,13 @@
                             onblur={handleBlur}
                             onkeyup={handleKeyUp}
                             autocomplete="off" />
-                        <span
-                            class="slds-icon_container slds-icon-utility-search">
-                            <svg
-                                class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default">
-                                <use
-                                    xlink:href="./resources/slds/icons/utility-sprite/svg/symbols.svg#search"></use>
+                        <span class="slds-icon_container slds-icon-utility-search">
+                            <svg class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default">
+                                <use xlink:href="./resources/slds/icons/utility-sprite/svg/symbols.svg#search"></use>
                             </svg>
                         </span>
                     </div>
-                    <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid">
+                    <div class="slds-dropdown slds-dropdown_length-10 slds-dropdown_fluid">
                         <ul class="slds-listbox slds-listbox_vertical">
                             <li if:true={isLoading} class="slds-listbox__item">
                                 <div class="slds-align_absolute-center slds-p-top_medium">
@@ -45,11 +42,11 @@
                                         class="slds-listbox__item"
                                         onmousedown={handleClickItem}
                                         data-name={item.name}>
-                                        <div class="slds-listbox__option slds-listbox__option_plain">
-                                            <div class="slds-text-body_regular" style="font-weight: bold;">
+                                        <div class="icj-search-combobox__item-label slds-has-flexi-truncate slds-listbox__option slds-listbox__option_plain">
+                                            <div class="slds-truncate slds-text-body_regular">
                                                 {item.label}
                                             </div>
-                                            <div class="slds-text-body_small slds-text-color_weak">
+                                            <div class="slds-truncate slds-text-body_small slds-text-color_weak">
                                                 {item.name}
                                             </div>
                                         </div>

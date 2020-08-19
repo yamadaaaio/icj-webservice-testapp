@@ -1,0 +1,28 @@
+<template>
+    <c-spinner if:true={fieldsSource.isLoading} size="small"></c-spinner>
+    <ul if:true={fieldsSource.rawItems} role="group">
+        <template for:each={fieldsSource.rawItems} for:item="item">
+            <li key={item.name} data-name={item.name} onclick={selectField} role="treeitem" 
+                aria-selected={item.isSelected} aria-level="2">
+                <div class="slds-tree__item">
+                    <button if:false={item.referenceTo} class="icj-icon-button slds-button slds-button_icon slds-var-p-around_x-small slds-is-disabled">
+                        <svg class="slds-button__icon slds-button__icon_small">
+                            <use xlink:href="./resources/slds/icons/utility-sprite/svg/symbols.svg#chevronright"></use>
+                        </svg>
+                    </button>
+                    <div class="slds-has-flexi-truncate">
+                        <div class="slds-truncate slds-text-body_regular" style="font-weight: bold;">
+                            {item.label}
+                        </div>
+                        <div if:false={item.field.calculated} class="slds-truncate slds-text-body_small slds-text-color_weak">
+                            {item.name} : {item.field.type}
+                        </div>
+                        <div if:true={item.field.calculated} class="slds-truncate slds-text-body_small slds-text-color_weak">
+                            {item.name} : formula({item.field.type})
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </template>
+    </ul>
+</template>

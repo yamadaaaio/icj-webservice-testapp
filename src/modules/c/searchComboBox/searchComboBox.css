@@ -1,0 +1,7 @@
+.icj-search-combobox__item-label div {
+    display: block;
+}
+
+.icj-search-combobox__item-label div:first-child {
+    font-weight: bold;
+}

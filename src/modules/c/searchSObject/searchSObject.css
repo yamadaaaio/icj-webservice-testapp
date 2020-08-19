@@ -1,0 +1,11 @@
+.icj-search-sobject {
+    height: 100%;
+}
+
+.icj-object-list {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-grow: 1;
+    max-width: none;
+}

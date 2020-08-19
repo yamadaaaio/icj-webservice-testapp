@@ -2,33 +2,9 @@
 import { LightningElement, wire, track } from 'lwc';
 import { store, connectStore } from '../../store/store';
 import actions from '../../store/actions';
-import { escapeRegExp } from '../../utils/regexpUtils';
+import { INITIAL_SOURCE } from '../../utils/itemsSource';
 
 const SLDS_IS_OPEN = 'slds-is-open';
-const INITIAL_SOURCE = {
-    isLoading: false,
-    rawItems: null,
-    items: null
-};
-const COMBOBOX_UPDATE_DELAY = 300;
-
-function filterItems(rawItems, keyword) {
-    let items = null;
-
-    if (!rawItems) {
-        return items;
-    }
-    if (keyword) {
-        const regexp = new RegExp(escapeRegExp(keyword), 'i');
-        items = rawItems.filter((item) => {
-            return regexp.test(`${item.name} ${item.label}`);
-        });
-    } else {
-        items = rawItems;
-    }
-
-    return items;
-}
 
 export default class ExecWebServicePanel extends LightningElement {
     @track sObjectSource;
@@ -59,7 +35,7 @@ export default class ExecWebServicePanel extends LightningElement {
     }
 
     @wire(connectStore, { store })
-    storeUpdated({ webServiceUi, sObjects, sObject, soap }) {
+    storeUpdated({ createJsonUi, webServiceUi, sObjects, sObject, soap }) {
         if (!this.sObjectSource.rawItems) {
             const source = this.sObjectSource;
             source.isLoading = sObjects.isFetching;
@@ -77,10 +53,6 @@ export default class ExecWebServicePanel extends LightningElement {
                 console.error(sObjects.error);
             }
         }
-        this.sObjectSource.items = filterItems(
-            this.sObjectSource.rawItems,
-            webServiceUi.objectType
-        );
 
         if (sObject[webServiceUi.objectType]) {
             const source = this.externalIdFieldSource;
@@ -102,12 +74,6 @@ export default class ExecWebServicePanel extends LightningElement {
                     console.error(sObjectState.error);
                 }
             }
-
-            console.log(webServiceUi.externalIdField);
-            source.items = filterItems(
-                source.rawItems,
-                webServiceUi.externalIdField
-            );
         } else {
             this.externalIdFieldSource = {
                 ...INITIAL_SOURCE
@@ -145,20 +111,21 @@ export default class ExecWebServicePanel extends LightningElement {
             this.errorMsg = `エラーが発生しました：\n${soap.error.stack}`;
             console.error(soap.error);
         }
+
+        if (createJsonUi.jsonString) {
+            const combobox = this.template.querySelector('.icj-object-type c-search-combo-box');
+            const jsonInput = this.template.querySelector('.icj-json-record__input');
+            combobox.setComboboxInputValue(createJsonUi.selectedSObjectName);
+            jsonInput.value = createJsonUi.jsonString;
+            store.dispatch(actions.createJsonUi.clearJsonString());
+            store.dispatch(
+                actions.webServiceUi.changeObjectType(createJsonUi.selectedSObjectName)
+            );
+        }
     }
 
     focusObjectType() {
         store.dispatch(actions.sObjects.fetchSObjectsIfNeeded());
-    }
-
-    changeObjectType(event) {
-        clearTimeout(this._timerId);
-
-        this._timerId = setTimeout(() => {
-            store.dispatch(
-                actions.webServiceUi.changeObjectType(event.detail.keyword)
-            );
-        }, COMBOBOX_UPDATE_DELAY);
     }
 
     selectObjectType(event) {
@@ -172,16 +139,6 @@ export default class ExecWebServicePanel extends LightningElement {
         store.dispatch(
             actions.sObject.describeSObjectIfNeeded(webServiceUi.objectType)
         );
-    }
-
-    changeExternalIdField(event) {
-        clearTimeout(this._timerId);
-
-        this._timerId = setTimeout(() => {
-            store.dispatch(
-                actions.webServiceUi.changeExternalIdField(event.detail.keyword)
-            );
-        }, COMBOBOX_UPDATE_DELAY);
     }
 
     selectExternalIdField(event) {

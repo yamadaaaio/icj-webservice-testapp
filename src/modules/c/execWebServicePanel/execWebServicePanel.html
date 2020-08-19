@@ -45,7 +45,7 @@
                         name="object_type"
                         label="オブジェクト"
                         is-loading={sObjectSource.isLoading}
-                        items={sObjectSource.items}
+                        raw-items={sObjectSource.rawItems}
                         onfocus={focusObjectType}
                         onkeyup={changeObjectType}
                         onselectitem={selectObjectType}>
@@ -56,7 +56,7 @@
                         name="external_id_field"
                         label="外部ID項目"
                         is-loading={externalIdFieldSource.isLoading}
-                        items={externalIdFieldSource.items}
+                        raw-items={externalIdFieldSource.rawItems}
                         onfocus={focusExternalIdField}
                         onkeyup={changeExternalIdField}
                         onselectitem={selectExternalIdField}>
@@ -140,7 +140,7 @@
                                 <div class="slds-form-element slds-form-element_readonly">
                                     <span class="slds-form-element__label">エラー詳細 (error_description)</span>
                                     <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static slds-text-color_error">{response.error_description}</div>
+                                        <div class="icj-error-msg slds-form-element__static slds-text-color_error">{response.error_description}</div>
                                     </div>
                                 </div>
                             </div>

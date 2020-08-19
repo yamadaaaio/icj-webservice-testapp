@@ -1,0 +1,84 @@
+<template>
+    <div class="icj-search-field slds-grid slds-grid_vertical">
+        <c-spinner if:true={fieldsSource.isLoading} size="large"></c-spinner>
+        <div class="slds-grid slds-var-m-top_small" style="align-items: center; align-self: flex-start;">
+            <div class="slds-col">
+                <button class="icj-icon-button slds-button slds-var-p-around_x-small slds-button_icon" title="Back" onclick={clickReturn}>
+                    <svg class="slds-button__icon">
+                        <use xlink:href="./resources/slds/icons/utility-sprite/svg/symbols.svg#back"></use>
+                    </svg>
+                    <span class="slds-assistive-text">Back</span>
+                </button>
+            </div>
+            <div class="slds-col">
+                <div class="slds-truncate slds-text-body_regular" style="font-weight: bold;">
+                    {fieldsSource.sObjectLabel}
+                </div>
+                <div class="slds-truncate slds-text-body_small slds-text-color_weak">
+                    {fieldsSource.sObjectName}
+                </div>
+            </div>
+        </div>
+        <div class="slds-col slds-form slds-var-p-around_small">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input 
+                        id="object" 
+                        type="text" 
+                        class="slds-input" 
+                        placeholder="項目を検索..." 
+                        onkeyup={filterField} />
+                    <span class="slds-icon_container slds-icon-utility-search">
+                        <svg class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default">
+                            <use xlink:href="./resources/slds/icons/utility-sprite/svg/symbols.svg#search"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="icj-field-list slds-col slds-tree_container">
+            <div if:true={isNotFound} class="slds-var-m-around_small">
+                <p class="slds-text-color_inverse-weak">一致する項目が見つかりません。</p>
+            </div>
+            <ul if:true={items} class="slds-tree">
+                <template for:each={items} for:item="item">
+                    <li key={item.name} data-name={item.name} onclick={selectField} role="treeitem" 
+                        aria-level="1" aria-expanded={item.isExpanded} aria-selected={item.isSelected}>
+                        <div class="slds-tree__item">
+                            <button if:false={item.referenceTo} class="icj-icon-button slds-button slds-button_icon slds-var-p-around_x-small slds-is-disabled">
+                                <svg class="slds-button__icon slds-button__icon_small">
+                                    <use xlink:href="./resources/slds/icons/utility-sprite/svg/symbols.svg#chevronright"></use>
+                                </svg>
+                            </button>
+                            <button if:true={item.referenceTo} class="icj-icon-button slds-button slds-button_icon slds-var-p-around_x-small"
+                                    data-name={item.name} onclick={expandTree}>
+                                <svg class="slds-button__icon slds-button__icon_small">
+                                    <use xlink:href="./resources/slds/icons/utility-sprite/svg/symbols.svg#chevronright"></use>
+                                </svg>
+                            </button>
+                            <div class="slds-has-flexi-truncate">
+                                <div class="slds-truncate slds-text-body_regular" style="font-weight: bold;">
+                                    {item.label}
+                                </div>
+                                <div if:false={item.field.calculated} class="slds-truncate slds-text-body_small slds-text-color_weak">
+                                    {item.name} : {item.field.type}
+                                </div>
+                                <div if:true={item.field.calculated} class="slds-truncate slds-text-body_small slds-text-color_weak">
+                                    {item.name} : formula({item.field.type})
+                                </div>
+                            </div>
+                        </div>
+                        <div if:true={item.isExpanded} style="position: relative;">
+                            <c-relationship-field-tree 
+                                sobject={item.referenceTo}
+                                relationship-name={item.field.relationshipName}
+                                onselect={handleSelectRelationshipField}
+                                ondeselect={handleDeselectRelationshipField}></c-relationship-field-tree>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </div>
+    
+</template>

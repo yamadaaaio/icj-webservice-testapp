@@ -1,0 +1,17 @@
+
+.icj-icon-button {
+    border: none;
+    box-shadow: none;
+}
+
+.icj-search-field {
+    height: 100%;
+}
+
+.icj-field-list {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-grow: 1;
+    max-width: none;
+}

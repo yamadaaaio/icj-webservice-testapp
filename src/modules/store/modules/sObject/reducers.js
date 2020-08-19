@@ -14,9 +14,7 @@ function sObject(state = {}, action) {
         case actionTypes.DESCRIBE_SOBJECT_SUCCEED: {
             const data = action.payload.data;
             const externalIdFields = data.fields.filter(
-                (field) =>
-                    field.name.toLowerCase() === 'id' ||
-                    field.externalId === true
+                (field) => field.idLookup === true
             );
             return {
                 ...state,
