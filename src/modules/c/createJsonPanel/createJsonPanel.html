@@ -62,11 +62,10 @@
                                                         </div>
                                                     </div>
                                                     <div class="slds-col">
-                                                        <div if:false={field.metadata.calculated} class="slds-text-body_small slds-text-color_weak">
-                                                            {field.metadata.type}
-                                                        </div>
-                                                        <div if:true={field.metadata.calculated} class="slds-text-body_small slds-text-color_weak">
-                                                            formula({field.metadata.type})
+                                                        <div class="slds-truncate">
+                                                            <span if:false={field.metadata.calculated}>{field.metadata.type}</span>
+                                                            <span if:true={field.metadata.calculated}>formula({field.metadata.type})</span>
+                                                            <span if:true={field.metadata.idLookup}>&nbsp;(idLookup)</span>
                                                         </div>
                                                     </div>
                                                 </div>

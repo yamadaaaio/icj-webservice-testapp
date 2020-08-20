@@ -60,11 +60,10 @@
                                 <div class="slds-truncate slds-text-body_regular" style="font-weight: bold;">
                                     {item.label}
                                 </div>
-                                <div if:false={item.field.calculated} class="slds-truncate slds-text-body_small slds-text-color_weak">
-                                    {item.name} : {item.field.type}
-                                </div>
-                                <div if:true={item.field.calculated} class="slds-truncate slds-text-body_small slds-text-color_weak">
-                                    {item.name} : formula({item.field.type})
+                                <div class="slds-truncate slds-text-body_small slds-text-color_weak">
+                                    <span if:false={item.field.calculated}>{item.name} : {item.field.type}</span>
+                                    <span if:true={item.field.calculated}>{item.name} : formula({item.field.type})</span>
+                                    <span if:true={item.field.idLookup}>&nbsp;(idLookup)</span>
                                 </div>
                             </div>
                         </div>
