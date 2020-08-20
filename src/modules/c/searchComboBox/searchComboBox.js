@@ -15,8 +15,9 @@ export default class SearchComboBox extends LightningElement {
     @api isLoading;
     @api 
     set rawItems(value) {
+        console.log('Set raw items:' + this.value);
         this._rawItems = value;
-        this.items = this._rawItems;
+        this.filter(this.value);
     }
     get rawItems() {
         return this._rawItems
@@ -24,7 +25,11 @@ export default class SearchComboBox extends LightningElement {
 
     @api
     get value() {
-        return this.template.querySelector('.icj-combobox__input').value;
+        const input = this.template.querySelector('.icj-combobox__input');
+        if (input) {
+            return input.value;
+        }
+        return null;
     }
 
     get comboBoxLabel() {
