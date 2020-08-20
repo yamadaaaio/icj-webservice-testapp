@@ -9,7 +9,7 @@
 }
 
 .icj-request-panel {
-    height: 50%;
+    height: 40%;
 }
 
 .icj-object-type,
@@ -19,7 +19,7 @@
 }
 
 .icj-response-panel {
-    height: 50%;
+    height: 60%;
 }
 
 .icj-result-table-scroller {
