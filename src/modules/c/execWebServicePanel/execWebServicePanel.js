@@ -91,20 +91,7 @@ export default class ExecWebServicePanel extends LightningElement {
         
         if (soap) {
             this.isExecuting = soap.isExecuting;
-            if (this.isExecuting) {
-
-                const now = new Date();
-                const year = ('0000' + now.getFullYear()).slice(-4);
-                const month = ('00' + (now.getMonth() + 1)).slice(-2);
-                const date = ('00' + (now.getDate())).slice(-2);
-                const hour = ('00' + (now.getHours())).slice(-2);
-                const minute = ('00' + (now.getMinutes())).slice(-2);
-                const second = ('00' + (now.getSeconds())).slice(-2);
-
-                this.executeCompletedDatetime = 
-                    `${year}/${month}/${date} ${hour}:${minute}:${second}`;
-            }
-        }
+         }
 
         if (soap.response) {
             this.isExecuteSucceed = true;
@@ -132,6 +119,18 @@ export default class ExecWebServicePanel extends LightningElement {
             this.isExecuteFailed = true;
             this.errorMsg = `エラーが発生しました：\n${soap.error.stack}`;
             console.error(soap.error);
+        }
+
+        if (soap.completeDate) {
+            const year = ('0000' + soap.completeDate.getFullYear()).slice(-4);
+            const month = ('00' + (soap.completeDate.getMonth() + 1)).slice(-2);
+            const date = ('00' + (soap.completeDate.getDate())).slice(-2);
+            const hour = ('00' + (soap.completeDate.getHours())).slice(-2);
+            const minute = ('00' + (soap.completeDate.getMinutes())).slice(-2);
+            const second = ('00' + (soap.completeDate.getSeconds())).slice(-2);
+
+            this.executeCompletedDatetime = 
+                `${year}/${month}/${date} ${hour}:${minute}:${second}`;
         }
 
         if (createJsonUi.jsonString) {

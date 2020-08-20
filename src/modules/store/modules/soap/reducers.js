@@ -5,7 +5,8 @@ export default function soap(state = {}, action) {
         case actionTypes.START_EXECUTE_WEBSERVICE:
             return {
                 ...state,
-                isExecuting: true
+                isExecuting: true,
+                completeDate: null
             };
 
         case actionTypes.EXECUTE_WEBSERVICE_SUCCEED:
@@ -13,6 +14,7 @@ export default function soap(state = {}, action) {
                 ...state,
                 isExecuting: false,
                 response: action.payload.response,
+                completeDate: new Date(),
                 error: null
             };
 
@@ -21,7 +23,8 @@ export default function soap(state = {}, action) {
                 ...state,
                 isExecuting: false,
                 response: null,
-                error: action.payload.error
+                error: action.payload.error,
+                completeDate: new Date(),
             };
 
         default:
