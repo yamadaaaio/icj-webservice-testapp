@@ -107,7 +107,7 @@ export default class ExecWebServicePanel extends LightningElement {
                 }
                 this.response.dml_result = dmlResults;
             } else {
-                if (!this.response.dml_result.$) {
+                if (this.response.dml_result) {
                     this.response.dml_result = [{ row_no: 1, ...this.response.dml_result }];
                 } else {
                     this.response.dml_result = null;
