@@ -15,7 +15,6 @@ export default class SearchComboBox extends LightningElement {
     @api isLoading;
     @api 
     set rawItems(value) {
-        console.log('Set raw items:' + this.value);
         this._rawItems = value;
         this.filter(this.value);
     }
