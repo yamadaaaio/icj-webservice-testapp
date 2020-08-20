@@ -16,6 +16,17 @@
                         </svg>
                     </span>
                 </div>
+                <div class="slds-checkbox">
+                    <input 
+                        id="include-all"
+                        class="icj-include-all"
+                        type="checkbox"
+                        onclick={toggleIncludeAll} />
+                    <label class="slds-checkbox__label" for="include-all">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">共有・変更イベントを含める</span>
+                    </label>
+                </div>
             </div>
         </div>
         <div if:true={isNotFound} class="slds-var-m-around_small">

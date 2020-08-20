@@ -10,6 +10,9 @@ export default class SearchSObject extends LightningElement {
     @track sObjectsSource;
     @track items;
 
+    filterKeyword;
+    includeAll = false;
+
     get isNotFound() {
         return (this.sObjectsSource) && 
                (!this.sObjectsSource.isLoading) && 
@@ -44,6 +47,7 @@ export default class SearchSObject extends LightningElement {
                     );
 
                     this.items = source.rawItems;
+                    this.filter();
 
                 } else if (sObjects.error) {
                     // error
@@ -54,12 +58,29 @@ export default class SearchSObject extends LightningElement {
     }
 
     filterSObject(event) {
-        this.items = filterItems(
-            this.sObjectsSource.rawItems, event.target.value);
+        this.filterKeyword = event.target.value;
+        this.filter();
     }
 
     selectSObject(event) {
         const selectedSObject = event.currentTarget.dataset.name;
         this.dispatchEvent(createCustomEvent('select', { selectedSObject }));
+    }
+
+    toggleIncludeAll(event) {
+        this.includeAll = event.target.checked;
+        this.filter();
+    }
+
+    filter() {
+        const filteredByKeyword = filterItems(
+            this.sObjectsSource.rawItems, this.filterKeyword);
+
+        if (!this.includeAll) {
+            this.items = filteredByKeyword.filter(
+                item => !item.name.endsWith("Share") && !item.name.endsWith("ChangeEvent"));
+        } else {
+            this.items = filteredByKeyword;
+        }
     }
 }
