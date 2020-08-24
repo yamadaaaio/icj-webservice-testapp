@@ -17,13 +17,28 @@
             </div>
             <div if:false={isEmpty} class="slds-grid slds-grid_vertical" style="height: 100%;">
 
-                <div class="icj-button-group slds-col slds-grow-none slds-var-m-bottom_small">
+                <div class="icj-button-group slds-col slds-grow-none">
                     <input type="button" class="slds-button slds-button_neutral" 
                            value="すべての値をクリア" onclick={clearAllValues} />
                     <input type="button" class="slds-button slds-button_neutral" 
                            value="すべての項目を削除" onclick={clearAllFields} />
                     <input type="button" class="slds-button slds-button_brand" 
                            value="Webサービス実行タブに反映" onclick={createJson} />
+                </div>
+                <div class="icj-checkbox-group slds-col slds-grow-none slds-var-m-bottom_small">
+                    <div class="slds-form-element">
+                        <div class="slds-checkbox">
+                            <input 
+                                id="insert-null-value"
+                                class="insert-null-value"
+                                type="checkbox"
+                                onclick={toggleInsertNullValue} />
+                            <label class="slds-checkbox__label" for="insert-null-value">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label">nullを挿入</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <div class="slds-col" style="overflow: hidden;">
                     <div class="icj-scroller slds-scrollable">

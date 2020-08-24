@@ -77,6 +77,13 @@ export default class SearchField extends LightningElement {
         }
     }
 
+    focusSearchBox(event) {
+        event.preventDefault();
+        const valueLength = event.target.value.length;
+        event.target.selectionStart = 0;
+        event.target.selectionEnd = valueLength;
+    }
+
     filterField(event) {
         this.items = filterItems(
             this.fieldsSource.rawItems, event.target.value);

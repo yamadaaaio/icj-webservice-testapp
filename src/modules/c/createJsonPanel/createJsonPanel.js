@@ -202,8 +202,11 @@ export default class CreateJsonPanel extends LightningElement {
     }
     
     createJson() {
+
         const records = [];
         const isEmptyRow = row => !row.columns.some(({value}) => value !== null);
+        const insertNullValue = this.template.querySelector('.insert-null-value').checked;
+
         for(let row of this.rows) {
             if (isEmptyRow(row)) {
                 continue;
@@ -214,7 +217,11 @@ export default class CreateJsonPanel extends LightningElement {
             const record = row.columns.reduce((prev, column) => {
                 let value;
                 if (column.value == null) {
-                    value = null;
+                    if (insertNullValue) {
+                        value = null;
+                    } else {
+                        return prev;
+                    }
                 } else if (column.type === 'double' || column.type === 'percent') {
                     value = parseFloat(column.value);
                     if (Number.isNaN(value)) {
@@ -225,7 +232,9 @@ export default class CreateJsonPanel extends LightningElement {
                 } else {
                     value = column.value;
                 }
+
                 prev = { ...prev, [column.name]: value};
+
                 return prev;
             }, {});
 
