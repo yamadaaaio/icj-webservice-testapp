@@ -55,10 +55,14 @@ export default class SearchComboBox extends LightningElement {
     }
 
     handleFocus(event) {
+        event.preventDefault();
         event.stopPropagation();
         const combobox = this.template.querySelector('.icj-combobox');
         combobox.classList.add(SLDS_IS_OPEN);
         const input = this.template.querySelector('.icj-combobox__input');
+        const valueLength = input.value.length;
+        input.selectionStart = 0;
+        input.selectionEnd = valueLength;
         this.filter(input.value);
         this.dispatchEvent(createCustomEvent('focus'));
     }
