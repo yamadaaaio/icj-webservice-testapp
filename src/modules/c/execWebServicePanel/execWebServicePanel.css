@@ -4,10 +4,6 @@
     flex-direction: column;
 }
 
-:host .slds-box {
-    background-color: #fff;
-}
-
 .icj-request-panel {
     height: 45%;
 }
@@ -20,6 +16,7 @@
 
 .icj-response-panel {
     height: 55%;
+    border-top: 1px solid #dddbda;
 }
 
 .icj-result-table-scroller {
