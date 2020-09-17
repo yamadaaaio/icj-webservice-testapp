@@ -2,7 +2,12 @@
     <c-spinner if:true={isLoading} size="large"></c-spinner>
     <div class="slds-grid slds-grid_vertical" style="height: 100%;">
         <div class="slds-grid slds-var-p-around_x-small">
-            <input type="button" class="slds-button slds-button_neutral" onclick={refresh} value="更新" />
+            <Button type="button" class="slds-button slds-button_neutral" onclick={refresh}>
+                <svg class="slds-button__icon slds-button__icon_left">
+                    <use xlink:href="./resources/slds/icons/utility-sprite/svg/symbols.svg#refresh"></use>
+                </svg>
+                <span>更新</span>
+            </Button>
         </div>
         <div class="slds-col slds-var-m-bottom_small" style="height: calc(100% - 137px);">
             <div class="slds-var-m-around_x-small" if:true={isEmpty}>
@@ -58,8 +63,6 @@
                                         ログサイズ
                                     </div>
                                 </th>
-                                <th scope="col">
-                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -87,14 +90,22 @@
                                         <div>{apexLog.Status}</div>
                                     </td>
                                     <td scope="row">
-                                        <div>{apexLog.DurationMilliseconds}</div>
-                                    </td>
-                                    <td scope="row">
-                                        <div>{apexLog.LogLength}</div>
+                                        <div>{apexLog.DurationMilliseconds} ms</div>
                                     </td>
                                     <td scope="row">
                                         <div>
-                                            <a href={apexLog.DownloadLink}>ダウンロード</a>
+                                            <a class="slds-media slds-media_center" href={apexLog.DownloadLink}>
+                                                <div class="slds-media__figure">
+                                                    <span class="slds-icon_container slds-icon-utility-builder slds-current-color">
+                                                        <svg class="slds-icon slds-icon_x-small">
+                                                            <use xlink:href="resources/slds/icons/utility-sprite/svg/symbols.svg#download"></use>
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <div class="slds-media_body">
+                                                    {apexLog.LogLength} byte
+                                                </div>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
