@@ -70,7 +70,12 @@ export default class ApexLogPanel extends LightningElement {
     }
 
     refresh() {
-        this.template.querySelector('.icj-log-table-scroller').scrollTop = 0;
+
+        const scroller = this.template.querySelector('.icj-log-table-scroller');
+        if (scroller) {
+            scroller.scrollTop = 0;
+        }
+
         this.apexLogs = [];
         this.offset = 0;
         this.isEndFetch = false;

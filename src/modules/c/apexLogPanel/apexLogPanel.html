@@ -5,12 +5,12 @@
             <input type="button" class="slds-button slds-button_neutral" onclick={refresh} value="更新" />
         </div>
         <div class="slds-col slds-var-m-bottom_small" style="height: calc(100% - 137px);">
-            <div if:true={isEmpty}>
+            <div class="slds-var-m-around_x-small" if:true={isEmpty}>
                 <p class="slds-text-color_inverse-weak">Apexログがありません。</p>
             </div>
             <template if:false={isEmpty}>
                 <div class="icj-log-table-scroller slds-scrollable_y" onscroll={fetchMore}>
-                    <table class="icj-log-table slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                    <table class="icj-log-table slds-table slds-table_cell-buffer slds-table_bordered">
                         <thead>
                             <tr class="slds-line-height_reset">
                                 <th scope="col">
