@@ -87,6 +87,7 @@ async function doCallback(callback) {
             (err, metadata) => {
                 if (err) {
                     console.error(err);
+                    callback(null, null);
                 } else {
                     const className =
                         metadata.fullName === PACKAGE_NAMESPACE
