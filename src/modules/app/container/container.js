@@ -25,6 +25,11 @@ export default class AppContainer extends LightningElement {
             name: tabs.CREATE_JSON,
             title: 'JSON生成',
             className: SLDS_TAB_ITEM
+        },
+        {
+            name: tabs.APEX_LOG,
+            title: 'Apexログ',
+            className: SLDS_TAB_ITEM
         }
     ];
 

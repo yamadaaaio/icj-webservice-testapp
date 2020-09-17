@@ -1,0 +1,40 @@
+
+.icj-log-table-scroller {
+    border: 1px solid #dddbda;
+}
+
+.icj-log-table {
+    border-top: none;
+    border-bottom: none;
+}
+
+.icj-log-table thead tr {
+    border-top: none;
+    border-bottom: none;
+}
+
+.icj-log-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-top: none;
+    border-bottom: none;
+}
+
+.icj-log-table thead th::after {
+    content: '';
+    width: 100%;
+    border-bottom: 1px solid #dddbda;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.icj-log-table tbody tr:first-child td {
+    border-top: none;
+}
+
+.icj-log-table thead th:first-child,
+.icj-log-table tbody td:first-child {
+    padding-left: 0.5rem;
+}

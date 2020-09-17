@@ -8,6 +8,7 @@ import createJsonUi from './modules/createJsonUi/reducers';
 import sObjects from './modules/sObjects/reducers';
 import sObject from './modules/sObject/reducers';
 import soap from './modules/soap/reducers';
+import apexLog from './modules/apexLog/reducers';
 
 let middlewares = [thunk];
 // eslint-disable-next-line no-undef
@@ -22,7 +23,8 @@ export const store = createStore(
         createJsonUi,
         sObjects,
         sObject,
-        soap
+        soap,
+        apexLog
     }),
     applyMiddleware(...middlewares)
 );

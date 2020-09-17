@@ -1,0 +1,111 @@
+<template>
+    <c-spinner if:true={isLoading} size="large"></c-spinner>
+    <div class="slds-grid slds-grid_vertical" style="height: 100%;">
+        <div class="slds-grid slds-var-p-around_x-small">
+            <input type="button" class="slds-button slds-button_neutral" onclick={refresh} value="更新" />
+        </div>
+        <div class="slds-col slds-var-m-bottom_small" style="height: calc(100% - 137px);">
+            <div if:true={isEmpty}>
+                <p class="slds-text-color_inverse-weak">Apexログがありません。</p>
+            </div>
+            <template if:false={isEmpty}>
+                <div class="icj-log-table-scroller slds-scrollable_y" onscroll={fetchMore}>
+                    <table class="icj-log-table slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th scope="col">
+                                    <div class="slds-truncate">
+                                        No.
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="開始時刻">
+                                        開始時刻
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="ユーザ">
+                                        ユーザ
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="要求種別">
+                                        要求種別
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="アプリケーション">
+                                        アプリケーション
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="演算子">
+                                        演算子
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="状況">
+                                        状況
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="所要時間">
+                                        所要時間
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="ログサイズ">
+                                        ログサイズ
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={apexLogs} for:item="apexLog">
+                                <tr class="slds-hint-parent" key={apexLog.Id}>
+                                    <td scope="row">
+                                        <div>{apexLog.No}</div>
+                                    </td>
+                                    <td scope="row">
+                                        <div>{apexLog.StartTime}</div>
+                                    </td>
+                                    <td scope="row">
+                                        <div>{apexLog.LogUser.Name}</div>
+                                    </td>
+                                    <td scope="row">
+                                        <div>{apexLog.Request}</div>
+                                    </td>
+                                    <td scope="row">
+                                        <div>{apexLog.Application}</div>
+                                    </td>
+                                    <td scope="row">
+                                        <div>{apexLog.Operation}</div>
+                                    </td>
+                                    <td scope="row">
+                                        <div>{apexLog.Status}</div>
+                                    </td>
+                                    <td scope="row">
+                                        <div>{apexLog.DurationMilliseconds}</div>
+                                    </td>
+                                    <td scope="row">
+                                        <div>{apexLog.LogLength}</div>
+                                    </td>
+                                    <td scope="row">
+                                        <div>
+                                            <a href={apexLog.DownloadLink}>ダウンロード</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="position: relative;">
+                    <c-spinner if:true={isLoadMore} size="small"></c-spinner>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>
