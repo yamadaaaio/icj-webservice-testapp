@@ -75,6 +75,7 @@ function _getJsforceOptions() {
 }
 
 async function doCallback(callback) {
+
     try {
         const versions = await connection.request('/services/data/');
         connection.version = versions[versions.length - 1].version;
@@ -87,6 +88,9 @@ async function doCallback(callback) {
             (err, metadata) => {
                 if (err) {
                     console.error(err);
+                    localStorage.removeItem(CONECCTED_KEY);
+                    localStorage.removeItem(ACCESS_TOKEN_KEY);
+                    localStorage.removeItem(INSTANCE_URL_KEY);
                     callback(null, null);
                 } else {
                     const className =
