@@ -38,3 +38,8 @@
 .icj-log-table tbody td:first-child {
     padding-left: 0.5rem;
 }
+
+.icj-log-status {
+    white-space: break-spaces;
+    word-break: break-all;
+}
