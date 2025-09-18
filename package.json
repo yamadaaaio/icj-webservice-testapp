@@ -4,12 +4,12 @@
     "author": "hsol-myamada",
     "dependencies": {
         "@salesforce-ux/design-system": "^2.13.6",
-        "compression": "^1.7.4",
+        "compression": "^1.8.1",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "helmet": "^3.23.3",
         "jsforce": "^1.9.3",
-        "jsforce-ajax-proxy": "^1.0.0",
+        "jsforce-ajax-proxy": "^2.0.0",
         "redux": "^4.0.5",
         "redux-thunk": "^2.3.0"
     },
